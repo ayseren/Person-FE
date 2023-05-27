@@ -1,11 +1,12 @@
-import {Button} from 'devextreme-react';
+import React from 'react';
+import App from '../src/pages/App';
 
 const Home = () => {
-  const sayHelloWorld = () => {
-    alert('Hello world!');
-  };
-
-  return <Button text="Click me" onClick={sayHelloWorld} />;
+  return (
+    <div>
+      <App />
+    </div>
+  );
 };
 
 export default Home;
