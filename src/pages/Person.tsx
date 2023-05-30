@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RouterService from "../../service/RouterService";
 import { DataGrid } from "devextreme-react";
-import { Column, Summary, TotalItem } from "devextreme-react/data-grid";
+import { Button, Column, Editing, Summary, TotalItem } from "devextreme-react/data-grid";
 import "devextreme/dist/css/dx.common.css";
 import "devextreme/dist/css/dx.light.css";
 import styles from "./Person.module.scss";
@@ -33,10 +33,26 @@ const Person: React.FC = () => {
     fetchData();
   }, []);
 
+  const onRowValidating = (e: any) => {
+    const position = e.newData.Position;
+  };
+
+  const onEditorPreparing = (e: any) => {
+    console.log("asfdf", e);
+  };
+
+  const allowDeleting = (e: any) => {
+    console.log(e.row.data.Position);
+  };
+
   const columns: any = [];
   persons.forEach((person) => {
     columns.push(
       <>
+        <Column type="buttons" width={110}>
+          <Button name="edit" />
+          <Button name="delete" />
+        </Column>
         <Column dataField={person.id} caption={person.id} />
         <Column dataField={person.firstName} caption={person.firstName} />
         <Column dataField={person.middleName} caption={person.middleName} />
@@ -50,7 +66,8 @@ const Person: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <DataGrid dataSource={persons} showBorders={true}>
+      <DataGrid dataSource={persons} showBorders={true} id="personTable" key="Id" onRowValidating={onRowValidating} onEditorPreparing={onEditorPreparing}>
+        <Editing mode="row" useIcons={true} allowUpdating={true} allowDeleting={allowDeleting} />
         <Column dataField="id" caption="ID" />
         <Column dataField="firstName" caption="First Name" />
         <Column dataField="middleName" caption="Middle Name" />
@@ -59,9 +76,6 @@ const Person: React.FC = () => {
         <Column dataField="gender" caption="Gender" />
         <Column dataField="location" caption="Location" />
         {columns}
-        <Summary>
-          <TotalItem column="age" summaryType="sum" displayFormat="Total: {0}" />
-        </Summary>
       </DataGrid>
     </div>
   );
