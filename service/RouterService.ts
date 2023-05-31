@@ -1,54 +1,79 @@
-import axios from "axios";
-
 const apiUrl = "https://localhost:7102/api";
 
-enum GENDER {
-  "FEMALE" = "Female",
-  "MALE" = "Male",
-}
-
 type Person = {
-  id: number;
+  id?: number;
   firstName: string;
   middleName?: string;
   lastName: string;
   birthDate: Date;
-  gender: GENDER;
+  gender: string;
   location: string;
 };
 
 const RouterService = {
-  getPersons: async () => {
-    const response = await fetch(`${apiUrl}/GetAll`, { mode: "cors" });
-    const data = await response.json();
-
-    return data;
+  getPersons: () => {
+    return fetch(`${apiUrl}/GetAll`, { mode: "cors" })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("ERROR", error);
+        throw error;
+      });
   },
 
   getPerson: async (id: number) => {
-    const response = await fetch(`${apiUrl}/GetById/${id}`, { mode: "cors" });
-    const data = await response.json();
-
-    return data;
+    return fetch(`${apiUrl}/GetById/${id}`, { mode: "cors" })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("ERROR", error);
+        throw error;
+      });
   },
 
   addPerson: async (person: Person) => {
-    const response = await axios.post(`${apiUrl}/Add`, person);
-    console.log(response);
-
-    return response;
+    return fetch(`${apiUrl}/Add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(person),
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("ERROR", error);
+        throw error;
+      });
   },
 
   updatePerson: async (id: number, person: Person) => {
-    const response = await axios.put(`${apiUrl}/Update/${id}`, person);
-
-    return response;
+    return fetch(`${apiUrl}/Update/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(person),
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("ERROR", error);
+        throw error;
+      });
   },
 
   deletePerson: async (id: number) => {
-    const response = await axios.delete(`${apiUrl}/Delete/${id}`);
-
-    return response;
+    return fetch(`${apiUrl}/Delete/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        key: id,
+      }),
+    })
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("ERROR", error);
+        throw error;
+      });
   },
 };
 
