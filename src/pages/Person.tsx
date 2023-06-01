@@ -54,7 +54,7 @@ const Person: React.FC = () => {
         const updatedValues = {
           lastName: values.lastName ? values.lastName : key.lastName,
           firstName: values.firstName ? values.firstName : key.firstName,
-          middleName: values.middleName ? values.middleName : key.middleName,
+          middleName: values.middleName !== undefined ? values.middleName : key.middleName,
           birthDate: values.birthDate ? values.birthDate : key.birthDate,
           gender: values.gender ? values.gender : key.gender,
           location: values.location ? values.location : key.location,
