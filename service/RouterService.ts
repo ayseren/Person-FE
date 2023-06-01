@@ -20,7 +20,7 @@ const RouterService = {
       });
   },
 
-  getPerson: async (id: number) => {
+  getPerson: (id: number) => {
     return fetch(`${apiUrl}/GetById/${id}`, { mode: "cors" })
       .then((response) => response.json())
       .catch((error) => {
@@ -29,7 +29,7 @@ const RouterService = {
       });
   },
 
-  addPerson: async (person: Person) => {
+  addPerson: (person: Person) => {
     return fetch(`${apiUrl}/Add`, {
       method: "POST",
       headers: {
@@ -44,7 +44,7 @@ const RouterService = {
       });
   },
 
-  updatePerson: async (id: number, person: Person) => {
+  updatePerson: (id: number, person: Person) => {
     return fetch(`${apiUrl}/Update/${id}`, {
       method: "POST",
       headers: {
@@ -59,7 +59,7 @@ const RouterService = {
       });
   },
 
-  deletePerson: async (id: number) => {
+  deletePerson: (id: number) => {
     return fetch(`${apiUrl}/Delete/${id}`, {
       method: "POST",
       headers: {
