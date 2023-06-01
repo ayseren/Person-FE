@@ -17,14 +17,13 @@ type Person = {
   location: string;
 };
 
-const Person: React.FC = () => {
-  const [lookupDataSource, setLookupDataSource] = useState<{ id: number; name: string }[]>([]);
+const genders = [
+  { id: 1, name: "FEMALE" },
+  { id: 2, name: "MALE" },
+];
 
+const Person: React.FC = () => {
   let grid: DataGrid<Person, any> | null = null;
-  const genders = [
-    { id: 1, name: "FEMALE" },
-    { id: 2, name: "MALE" },
-  ];
 
   const addRow = () => {
     if (grid) {
@@ -34,21 +33,8 @@ const Person: React.FC = () => {
   };
 
   const ordersData = new CustomStore({
-    load: () => {
-      return RouterService.getPersons();
-    },
-    insert: async (values: Person) => {
-      const person = {
-        firstName: values.firstName,
-        middleName: values.middleName,
-        lastName: values.lastName,
-        birthDate: values.birthDate,
-        gender: values.gender,
-        location: values.location,
-      };
-
-      return RouterService.addPerson(person);
-    },
+    load: async () => await RouterService.getPersons(),
+    insert: async (values: Person) => await RouterService.addPerson(values),
     update: async (key: Person, values: Person) => {
       if (key.id) {
         const updatedValues = {
@@ -60,21 +46,13 @@ const Person: React.FC = () => {
           location: values.location ? values.location : key.location,
         };
 
-        return RouterService.updatePerson(key.id, updatedValues);
+        return await RouterService.updatePerson(key.id, updatedValues);
       }
     },
     remove: async (key: Person) => {
-      if (key.id) return RouterService.deletePerson(key.id);
+      if (key.id) return await RouterService.deletePerson(key.id);
     },
   });
-
-  useEffect(() => {
-    RouterService.getPersons().then((persons) => {
-      const uniqueGenders = genders.filter((gender) => persons.some((person: Person) => person.gender === gender.name));
-
-      setLookupDataSource(uniqueGenders);
-    });
-  }, []);
 
   return (
     <div className={styles.container}>
@@ -99,7 +77,7 @@ const Person: React.FC = () => {
         <Column dataField="lastName" caption="Last Name" />
         <Column dataField="birthDate" caption="Birth Date" dataType="date" />
         <Column dataField="gender" caption="Gender">
-          <Lookup dataSource={lookupDataSource} displayExpr="name" />
+          <Lookup dataSource={genders} valueExpr="name" displayExpr="name" />
         </Column>
         <Column dataField="location" caption="Location" />
         <Paging defaultPageSize={10} />
