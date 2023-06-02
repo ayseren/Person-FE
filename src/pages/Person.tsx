@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import RouterService from "../../service/RouterService";
 import { DataGrid, Form, Popup, SpeedDialAction, Toolbar } from "devextreme-react";
-import { Column, Editing, Item, Lookup, Pager, Paging } from "devextreme-react/data-grid";
+import { Column, Editing, Lookup, Paging, RequiredRule } from "devextreme-react/data-grid";
 import "devextreme/dist/css/dx.common.css";
 import "devextreme/dist/css/dx.light.css";
 import CustomStore from "devextreme/data/custom_store";
@@ -34,7 +34,18 @@ const Person: React.FC = () => {
 
   const ordersData = new CustomStore({
     load: async () => await RouterService.getPersons(),
-    insert: async (values: Person) => await RouterService.addPerson(values),
+    insert: async (values: Person) => {
+      const addedValues = {
+        lastName: values.lastName,
+        firstName: values.firstName,
+        middleName: values.middleName !== undefined ? values.middleName : "",
+        birthDate: values.birthDate,
+        gender: values.gender,
+        location: values.location,
+      };
+
+      return await RouterService.addPerson(addedValues);
+    },
     update: async (key: Person, values: Person) => {
       if (key.id) {
         const updatedValues = {
@@ -72,14 +83,23 @@ const Person: React.FC = () => {
           <Form labelLocation="top" />
           <Popup showTitle={true} title="Row in the editing state" />
         </Editing>
-        <Column dataField="firstName" caption="First Name" />
+        <Column dataField="firstName" caption="First Name">
+          <RequiredRule />
+        </Column>
         <Column dataField="middleName" caption="Middle Name" />
-        <Column dataField="lastName" caption="Last Name" />
-        <Column dataField="birthDate" caption="Birth Date" dataType="date" />
+        <Column dataField="lastName" caption="Last Name">
+          <RequiredRule />
+        </Column>
+        <Column dataField="birthDate" caption="Birth Date" dataType="date">
+          <RequiredRule />
+        </Column>
         <Column dataField="gender" caption="Gender">
           <Lookup dataSource={genders} valueExpr="name" displayExpr="name" />
+          <RequiredRule />
         </Column>
-        <Column dataField="location" caption="Location" />
+        <Column dataField="location" caption="Location">
+          <RequiredRule />
+        </Column>
         <Paging defaultPageSize={10} />
       </DataGrid>
     </div>
